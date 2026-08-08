@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: BVHSHOP
+  datasource:
+    url: jdbc:postgresql://localhost:5432/VH_SHOP
+    username: postgres
+    password: Work@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  secret: Lyleangseng@WOrk@1234567890
+  expiration: 3600000
