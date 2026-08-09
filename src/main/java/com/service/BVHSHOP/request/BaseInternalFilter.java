@@ -7,6 +7,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class BaseInternalFilter {
+public abstract class BaseInternalFilter {
+    private String search;
     private List<String> fetch;
 }

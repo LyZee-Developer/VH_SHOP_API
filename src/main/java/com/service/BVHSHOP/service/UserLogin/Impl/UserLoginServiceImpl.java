@@ -5,18 +5,17 @@ import com.service.BVHSHOP.exception.ApiException;
 import com.service.BVHSHOP.model.UserLogin;
 import com.service.BVHSHOP.repository.UserLoginRepository;
 import com.service.BVHSHOP.request.UserLogin.UserLoginReq;
-import com.service.BVHSHOP.service.Impl.BaseInternalServiceImpl;
+import com.service.BVHSHOP.service.Impl.BaseInternalActivateServiceImpl;
 import com.service.BVHSHOP.service.JwtService;
 import com.service.BVHSHOP.service.UserLogin.UserLoginService;
 import com.service.BVHSHOP.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 @Service
-class UserLoginServiceImpl extends BaseInternalServiceImpl<UserLogin, Long> implements UserLoginService {
+class UserLoginServiceImpl extends BaseInternalActivateServiceImpl<UserLogin, Long> implements UserLoginService {
 
     @Autowired
     UserLoginRepository userLoginRepository;
@@ -28,7 +27,7 @@ class UserLoginServiceImpl extends BaseInternalServiceImpl<UserLogin, Long> impl
     UserDetailsService userDetailsService;
 
     public UserLoginServiceImpl(UserLoginRepository userLoginRepository) {
-        super(userLoginRepository);
+        super(userLoginRepository, UserLogin.class);
         this.userLoginRepository = userLoginRepository;
     }
 

@@ -21,4 +21,6 @@ public class UserLogin {
     private Short attempt;
 
     private Boolean isDisabled = false;
+
+    private Boolean isActivate = true;
 }

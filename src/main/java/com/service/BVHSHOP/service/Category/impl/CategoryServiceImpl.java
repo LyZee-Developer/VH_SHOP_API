@@ -6,16 +6,16 @@ import com.service.BVHSHOP.repository.CategoryRepository;
 import com.service.BVHSHOP.request.Category.CategoryFilter;
 import com.service.BVHSHOP.request.Category.CategoryReq;
 import com.service.BVHSHOP.service.Category.CategoryService;
-import com.service.BVHSHOP.service.Impl.BaseInternalServiceImpl;
+import com.service.BVHSHOP.service.Impl.BaseInternalActivateServiceImpl;
 import org.springframework.stereotype.Service;
 
 @Service
-class CategoryServiceImpl extends BaseInternalServiceImpl<Category, Long> implements CategoryService {
+class CategoryServiceImpl extends BaseInternalActivateServiceImpl<Category, Long> implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        super(categoryRepository);
+        super(categoryRepository, Category.class);
         this.categoryRepository = categoryRepository;// pass it up — no getJpaRepository() override needed
     }
 
