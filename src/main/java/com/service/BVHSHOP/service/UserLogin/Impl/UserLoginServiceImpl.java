@@ -1,13 +1,17 @@
 package com.service.BVHSHOP.service.UserLogin.Impl;
 
+import com.service.BVHSHOP.apiResponse.LoginResponse;
 import com.service.BVHSHOP.exception.ApiException;
 import com.service.BVHSHOP.model.UserLogin;
 import com.service.BVHSHOP.repository.UserLoginRepository;
 import com.service.BVHSHOP.request.UserLogin.UserLoginReq;
 import com.service.BVHSHOP.service.Impl.BaseInternalServiceImpl;
+import com.service.BVHSHOP.service.JwtService;
 import com.service.BVHSHOP.service.UserLogin.UserLoginService;
 import com.service.BVHSHOP.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -16,6 +20,12 @@ class UserLoginServiceImpl extends BaseInternalServiceImpl<UserLogin, Long> impl
 
     @Autowired
     UserLoginRepository userLoginRepository;
+
+    @Autowired
+    JwtService jwtService;
+
+    @Autowired
+    UserDetailsService userDetailsService;
 
     public UserLoginServiceImpl(UserLoginRepository userLoginRepository) {
         super(userLoginRepository);
@@ -42,7 +52,7 @@ class UserLoginServiceImpl extends BaseInternalServiceImpl<UserLogin, Long> impl
     }
 
     @Override
-    public String login(UserLoginReq req) {
+    public LoginResponse login(UserLoginReq req) {
         UserLogin user = userLoginRepository.findByUsernameAndIsDisabled(req.getUsername(), Boolean.FALSE);
         boolean isMatch = PasswordUtil.matches(req.getPassword(), user.getPassword());
         if (!ObjectUtils.isEmpty(user) && !isMatch) {
@@ -55,6 +65,11 @@ class UserLoginServiceImpl extends BaseInternalServiceImpl<UserLogin, Long> impl
             throw new ApiException("User account not found!");
         }
 
-        return "Login success";
+        String token = jwtService.generateToken(userDetailsService.loadUserByUsername(req.getUsername()));
+        return LoginResponse.builder()
+                .token(token)
+                .tokenType("Bearer")
+                .expiresIn(3600L)
+                .build();
     }
 }

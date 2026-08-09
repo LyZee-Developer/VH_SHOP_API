@@ -1,6 +1,11 @@
 spring:
   application:
     name: BVHSHOP
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
   datasource:
     url: jdbc:postgresql://localhost:5432/VH_SHOP
     username: postgres
@@ -8,7 +13,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
 jwt:
-  secret: Lyleangseng@WOrk@1234567890
+  secret: xzv7jNAmMkRSTHTJMc9LutkWCDRYZEgEEBNoDpDEE0E=
   expiration: 3600000

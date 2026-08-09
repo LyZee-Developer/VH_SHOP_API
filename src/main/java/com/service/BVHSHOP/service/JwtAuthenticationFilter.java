@@ -1,5 +1,6 @@
 package com.service.BVHSHOP.service;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,91 +24,54 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String authHeader =
-                request.getHeader("Authorization");
+        String header = request.getHeader("Authorization");
 
-        // No token
-        if (authHeader == null ||
-                !authHeader.startsWith("Bearer ")) {
-
+        if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token =
-                authHeader.substring(7);
+        String token = header.substring(7);
 
         try {
+            String username = jwtService.extractUsername(token);
 
-            String username =
-                    jwtService.extractUsername(token);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (username != null &&
-                    SecurityContextHolder
-                            .getContext()
-                            .getAuthentication() == null) {
-
-                UserDetails userDetails =
-                        userDetailsService
-                                .loadUserByUsername(username);
-
-                if (jwtService.isTokenValid(
-                        token,
-                        userDetails
-                )) {
-
-                    UsernamePasswordAuthenticationToken
-                            authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
-                                    userDetails.getAuthorities()
-                            );
-
-                    authentication.setDetails(
-                            new WebAuthenticationDetailsSource()
-                                    .buildDetails(request)
-                    );
-
-                    SecurityContextHolder
-                            .getContext()
-                            .setAuthentication(
-                                    authentication
-                            );
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-
-        } catch (JwtException |
-                 IllegalArgumentException e) {
-
-            SecurityContextHolder
-                    .clearContext();
-
-            response.setStatus(
-                    HttpServletResponse.SC_UNAUTHORIZED
-            );
-
-            response.setContentType(
-                    MediaType.APPLICATION_JSON_VALUE
-            );
-
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
             response.getWriter().write("""
                     {
-                        "status": 401,
-                        "code": "INVALID_TOKEN",
-                        "message": "Invalid or expired token"
+                        "status": "Error",
+                        "code": "TOKEN_EXPIRED",
+                        "message": "Token expired"
                     }
                     """);
-
+            return;
+        } catch (JwtException | IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\": \"Invalid token\"}");
             return;
         }
-
-        filterChain.doFilter(request, response);
+        System.out.println("Authentication in context: " + SecurityContextHolder.getContext().getAuthentication());
+        try {
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            System.out.println("Exception during filter chain: " + e.getClass().getName() + " - " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

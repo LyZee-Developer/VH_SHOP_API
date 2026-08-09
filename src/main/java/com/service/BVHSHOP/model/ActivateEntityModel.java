@@ -8,5 +8,5 @@ import lombok.Setter;
 @Getter
 @MappedSuperclass
 public class ActivateEntityModel extends BaseModel {
-    private Boolean isActivate;
+    private Boolean isActivate = true;
 }

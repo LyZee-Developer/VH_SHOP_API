@@ -36,7 +36,7 @@ public class CategoryController {
     }
 
     @GetMapping("/check-code")
-    public ResponseEntity<Object> checkCode(@RequestParam String name, @RequestParam Long id){
-        return ResponseEntity.ok(ApiResponse.success(categoryService.checkCode(name, id)));
+    public ResponseEntity<Object> checkCode(@RequestParam String name){
+        return ResponseEntity.ok(ApiResponse.success(categoryService.checkCode(name)));
     }
 }

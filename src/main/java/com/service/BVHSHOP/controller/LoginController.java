@@ -7,7 +7,6 @@ import com.service.BVHSHOP.service.UserLogin.UserLoginService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +26,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody UserLoginReq model){
-        String data = userLoginService.login(model);
-        return ResponseEntity.ok(ApiResponse.success(data));
+        return ResponseEntity.ok(ApiResponse.success(userLoginService.login(model)));
     }
 }

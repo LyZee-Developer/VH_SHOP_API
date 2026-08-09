@@ -1,5 +1,6 @@
 package com.service.BVHSHOP.service.Category.impl;
 
+import com.service.BVHSHOP.exception.ApiException;
 import com.service.BVHSHOP.model.Category;
 import com.service.BVHSHOP.repository.CategoryRepository;
 import com.service.BVHSHOP.request.Category.CategoryFilter;
@@ -25,6 +26,9 @@ class CategoryServiceImpl extends BaseInternalServiceImpl<Category, Long> implem
 
     @Override
     public String create(CategoryReq req) {
+        if(checkCode(req.getCode())){
+            throw new ApiException("Code already existed!");
+        }
         Category data = new Category();
         data.setCode(req.getCode());
         data.setName(req.getName());
@@ -42,7 +46,7 @@ class CategoryServiceImpl extends BaseInternalServiceImpl<Category, Long> implem
     }
 
     @Override
-    public Boolean checkCode(String code, Long id) {
+    public Boolean checkCode(String code) {
         return categoryRepository.existsByCodeAndIsActivate(code, Boolean.TRUE);
     }
 
