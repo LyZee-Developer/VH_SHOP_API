@@ -11,4 +11,5 @@ public interface ProductTypeItemService extends BaseInternalService<ProductTypeI
     String create(ProductTypeItemReq req);
     String update(Long id, ProductTypeItemReq req);
     String delete(Long id);
+    ProductTypeItem findOneThrow(Long id);
 }

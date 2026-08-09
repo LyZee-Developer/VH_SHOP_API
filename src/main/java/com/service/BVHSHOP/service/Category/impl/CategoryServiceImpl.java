@@ -51,6 +51,11 @@ class CategoryServiceImpl extends BaseInternalActivateServiceImpl<Category, Long
     }
 
     @Override
+    public Category findOneThrow(Long id) {
+        return findThrowById(id);
+    }
+
+    @Override
     public String delete(Long id) {
         Category data = findThrowById(id);
         data.setIsActivate(Boolean.FALSE);

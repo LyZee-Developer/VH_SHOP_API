@@ -29,7 +29,7 @@ class ProductTypeItemServiceImpl extends BaseInternalActivateServiceImpl<Product
 
     @Override
     public String create(ProductTypeItemReq req) {
-        ProductType type = productTypeService.findOne(req.getProductTypeId());
+        ProductType type = productTypeService.findOneThrow(req.getProductTypeId());
 
         ProductTypeItem item = new ProductTypeItem();
         item.setProductType(type);
@@ -42,7 +42,7 @@ class ProductTypeItemServiceImpl extends BaseInternalActivateServiceImpl<Product
 
     @Override
     public String update(Long id, ProductTypeItemReq req) {
-        ProductType type = productTypeService.findOne(req.getProductTypeId());
+        ProductType type = productTypeService.findOneThrow(req.getProductTypeId());
 
         ProductTypeItem item = findThrowById(id);
         item.setName(req.getName());
@@ -59,5 +59,10 @@ class ProductTypeItemServiceImpl extends BaseInternalActivateServiceImpl<Product
         item.setActivate(Boolean.FALSE);
         saveData(item);
         return "";
+    }
+
+    @Override
+    public ProductTypeItem findOneThrow(Long id) {
+        return findThrowById(id);
     }
 }

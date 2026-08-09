@@ -53,7 +53,7 @@ class ProductTypeServiceImpl extends BaseInternalActivateServiceImpl<ProductType
     }
 
     @Override
-    public ProductType findOne(Long id) {
+    public ProductType findOneThrow(Long id) {
         return findThrowById(id);
     }
 

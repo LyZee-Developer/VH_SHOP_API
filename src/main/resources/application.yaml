@@ -12,7 +12,15 @@ spring:
     password: Work@123
   jpa:
     hibernate:
-      ddl-auto: update
+#     ---- default first
+#      ddl-auto: update
+#      --- config with flyway
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
 jwt:
   secret: xzv7jNAmMkRSTHTJMc9LutkWCDRYZEgEEBNoDpDEE0E=
   expiration: 3600000

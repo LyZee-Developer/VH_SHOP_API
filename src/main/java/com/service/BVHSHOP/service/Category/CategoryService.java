@@ -11,4 +11,5 @@ public interface CategoryService extends BaseInternalService<Category, Long>  {
     String delete(Long id);
     String list(CategoryFilter id);
     Boolean checkCode(String code);
+    Category findOneThrow(Long id);
 }

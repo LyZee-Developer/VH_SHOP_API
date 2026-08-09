@@ -6,4 +6,5 @@ public interface RouteController {
     String USER_LOGIN = API + "/user-login";
     String PRODUCT_TYPE = API + "/product-type";
     String PRODUCT_TYPE_ITEM = API + "/product-type-item";
+    String PRODUCT = API + "/product";
 }
