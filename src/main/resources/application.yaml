@@ -13,9 +13,9 @@ spring:
   jpa:
     hibernate:
 #     ---- default first
-#      ddl-auto: update
+      ddl-auto: update
 #      --- config with flyway
-      ddl-auto: validate
+#      ddl-auto: validate
 
   flyway:
     enabled: true

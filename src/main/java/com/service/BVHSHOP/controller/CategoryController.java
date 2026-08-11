@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @Author : Ly LeangSeng
+ * @Email : lyleangseng712@gmail.com
+ * @Date : 8/8/2026 6:19 AM
+ */
 @RestController
 @RequestMapping(RouteController.CATEGORY)
 public class CategoryController {
@@ -16,27 +21,27 @@ public class CategoryController {
     CategoryService categoryService;
 
     @PostMapping("/list")
-    public ResponseEntity<Object> index(@RequestBody CategoryFilter filter){
+    public ResponseEntity<Object> index(@RequestBody CategoryFilter filter) {
         return ResponseEntity.ok(ApiResponse.success(categoryService.list(filter)));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Object> create(@RequestBody CategoryReq model){
+    public ResponseEntity<Object> create(@RequestBody CategoryReq model) {
         return ResponseEntity.ok(ApiResponse.success(categoryService.create(model)));
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<Object> update(@PathVariable(name = "id") Long id, @RequestBody CategoryReq model){
+    public ResponseEntity<Object> update(@PathVariable(name = "id") Long id, @RequestBody CategoryReq model) {
         return ResponseEntity.ok(ApiResponse.success(categoryService.update(id, model)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable(name = "id") Long id){
+    public ResponseEntity<Object> delete(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(ApiResponse.success(categoryService.delete(id)));
     }
 
     @GetMapping("/check-code")
-    public ResponseEntity<Object> checkCode(@RequestParam String name){
+    public ResponseEntity<Object> checkCode(@RequestParam String name) {
         return ResponseEntity.ok(ApiResponse.success(categoryService.checkCode(name)));
     }
 }

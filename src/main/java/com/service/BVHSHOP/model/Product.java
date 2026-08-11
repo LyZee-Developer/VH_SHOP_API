@@ -1,5 +1,6 @@
 package com.service.BVHSHOP.model;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,8 +32,13 @@ public class Product extends ActivateEntityModel {
     @ManyToOne
     private Category category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "currency_code", referencedColumnName = "code")
+    @JsonIncludeProperties({DataRef_.CODE, DataRef_.NAME, DataRef_.ENGLISH_NAME, DataRef_.DESCRIPTION})
+    private DataRef currency;
+
     private String description;
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL , orphanRemoval = true , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<ProductPrice> productPrice = new ArrayList<>();
 

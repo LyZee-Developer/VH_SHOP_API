@@ -13,6 +13,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * @Author : Ly LeangSeng
+ * @Email : lyleangseng712@gmail.com
+ * @Date : 8/11/2026 6:19 AM
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

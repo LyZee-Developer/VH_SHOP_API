@@ -19,6 +19,7 @@ public class ProductReq {
     private String name;
 
     private String englishName;
+    private String currencyCode;
     private Long productTypeId;
 
     @NotNull(message = "category is required")
@@ -29,6 +30,7 @@ public class ProductReq {
     @Getter
     @Setter
     public static class Price {
+        private Long id;
         @NotNull(message = "Product item id is required")
         private Long productItemId;
         private Double amount;

@@ -9,6 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @Author : Ly LeangSeng
+ * @Email : lyleangseng712@gmail.com
+ * @Date : 8/10/2026 6:19 AM
+ */
+
 @RestController
 @RequestMapping(RouteController.PRODUCT)
 public class ProductController {
@@ -16,22 +22,22 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping
-    public ResponseEntity<?> index(@RequestBody ProductFilter filter){
+    public ResponseEntity<?> index(@RequestBody ProductFilter filter) {
         return ResponseEntity.ok(ApiResponse.success(productService.index(filter)));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody ProductReq req){
+    public ResponseEntity<?> create(@RequestBody ProductReq req) {
         return ResponseEntity.ok(ApiResponse.success(productService.create(req)));
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ProductReq req){
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ProductReq req) {
         return ResponseEntity.ok(ApiResponse.success(productService.update(id, req)));
     }
 
     @GetMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(productService.delete(id)));
     }
 }
