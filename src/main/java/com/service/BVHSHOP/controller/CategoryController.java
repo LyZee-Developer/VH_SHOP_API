@@ -22,7 +22,7 @@ public class CategoryController {
 
     @PostMapping("/list")
     public ResponseEntity<Object> index(@RequestBody CategoryFilter filter) {
-        return ResponseEntity.ok(ApiResponse.success(categoryService.list(filter)));
+        return ResponseEntity.ok(ApiResponse.success(categoryService.index(filter)));
     }
 
     @PostMapping("/create")

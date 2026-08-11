@@ -94,6 +94,7 @@ class StockImpl extends BaseInternalActivateServiceImpl<Stock, Long> implements 
     public String delete(Long id) {
         Stock stock = findThrowById(id);
         stock.setIsActivate(Boolean.FALSE);
+        saveData(stock);
         return "delete success!";
     }
 

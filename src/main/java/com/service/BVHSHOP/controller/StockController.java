@@ -35,7 +35,7 @@ public class StockController {
         return ResponseEntity.ok(ApiResponse.success(stockService.addRemoveProduct(id, req)));
     }
 
-    @DeleteMapping("/add-remove/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         return ResponseEntity.ok(ApiResponse.success(stockService.delete(id)));
     }

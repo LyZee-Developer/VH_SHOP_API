@@ -7,6 +7,11 @@ import com.service.BVHSHOP.request.Category.CategoryFilter;
 import com.service.BVHSHOP.request.Category.CategoryReq;
 import com.service.BVHSHOP.service.Category.CategoryService;
 import com.service.BVHSHOP.service.Impl.BaseInternalActivateServiceImpl;
+import com.service.BVHSHOP.specification.CategorySpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,8 +25,10 @@ class CategoryServiceImpl extends BaseInternalActivateServiceImpl<Category, Long
     }
 
     @Override
-    public String list(CategoryFilter id) {
-        return "";
+    public Page<Category> index(CategoryFilter filter) {
+        Pageable page = PageRequest.of(filter.getPage(),filter.getSize());
+        Specification<Category> specification = new CategorySpecification(filter);
+        return findAllSpePageFetch(specification, page, filter.getFetch());
     }
 
     @Override

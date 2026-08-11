@@ -15,9 +15,13 @@ import com.service.BVHSHOP.service.Product.ProductPriceService;
 import com.service.BVHSHOP.service.Product.ProductService;
 import com.service.BVHSHOP.service.ProductType.ProductTypeService;
 import com.service.BVHSHOP.service.ProductTypeItem.ProductTypeItemService;
+import com.service.BVHSHOP.specification.ProductSpecification;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -49,17 +53,19 @@ class ProductServiceImpl extends BaseInternalActivateServiceImpl<Product, Long> 
 
     @Override
     public Page<Product> index(ProductFilter filter) {
-        return null;
+        Pageable page = PageRequest.of(filter.getPage(), filter.getSize());
+        Specification<Product> spec = new ProductSpecification(filter);
+        return findAllSpePageFetch(spec, page, filter.getFetch());
     }
 
     @Override
     @Transactional
     public String create(ProductReq req) {
-        if(checkCode(req.getCode())){
+        if (checkCode(req.getCode())) {
             throw new ApiException("code already existed!");
         }
 
-        if(req.getPrices().isEmpty()){
+        if (req.getPrices().isEmpty()) {
             throw new ApiException("Please enter price to each items");
         }
         DataRef dataRef = dataRefService.findByCodeThrow(req.getCurrencyCode());
@@ -93,7 +99,7 @@ class ProductServiceImpl extends BaseInternalActivateServiceImpl<Product, Long> 
 
         Long newProductTypeId = req.getProductTypeId();
 
-        if(!Objects.equals(newProductTypeId, oldProductTypeId)){
+        if (!Objects.equals(newProductTypeId, oldProductTypeId)) {
             pro.getProductPrice().clear();
         }
 
