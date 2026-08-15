@@ -1,5 +1,6 @@
 package com.service.BVHSHOP.request.Product;
 
+import com.service.BVHSHOP.request.BaseUploadFile;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

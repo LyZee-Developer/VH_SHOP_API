@@ -1,10 +1,9 @@
 package com.service.BVHSHOP.service.Product.Impl;
 
+import com.service.BVHSHOP.dto.ProductDTO;
 import com.service.BVHSHOP.exception.ApiException;
-import com.service.BVHSHOP.model.Category;
-import com.service.BVHSHOP.model.DataRef;
-import com.service.BVHSHOP.model.Product;
-import com.service.BVHSHOP.model.ProductType;
+import com.service.BVHSHOP.model.*;
+import com.service.BVHSHOP.repository.FileRepository;
 import com.service.BVHSHOP.repository.ProductRepository;
 import com.service.BVHSHOP.request.Product.ProductFilter;
 import com.service.BVHSHOP.request.Product.ProductReq;
@@ -14,7 +13,7 @@ import com.service.BVHSHOP.service.Impl.BaseInternalActivateServiceImpl;
 import com.service.BVHSHOP.service.Product.ProductPriceService;
 import com.service.BVHSHOP.service.Product.ProductService;
 import com.service.BVHSHOP.service.ProductType.ProductTypeService;
-import com.service.BVHSHOP.service.ProductTypeItem.ProductTypeItemService;
+import com.service.BVHSHOP.service.file.UploadService;
 import com.service.BVHSHOP.specification.ProductSpecification;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 class ProductServiceImpl extends BaseInternalActivateServiceImpl<Product, Long> implements ProductService {
@@ -38,13 +39,16 @@ class ProductServiceImpl extends BaseInternalActivateServiceImpl<Product, Long> 
     CategoryService categoryService;
 
     @Autowired
+    FileRepository fileRepository;
+
+    @Autowired
     ProductPriceService productPriceService;
 
     @Autowired
     DataRefService dataRefService;
 
     @Autowired
-    ProductTypeItemService productTypeItemService;
+    UploadService uploadService;
 
     public ProductServiceImpl(ProductRepository productRepository) {
         super(productRepository, Product.class);
@@ -52,15 +56,28 @@ class ProductServiceImpl extends BaseInternalActivateServiceImpl<Product, Long> 
     }
 
     @Override
-    public Page<Product> index(ProductFilter filter) {
+    public Page<ProductDTO> index(ProductFilter filter) {
         Pageable page = PageRequest.of(filter.getPage(), filter.getSize());
         Specification<Product> spec = new ProductSpecification(filter);
-        return findAllSpePageFetch(spec, page, filter.getFetch());
+        Page<Product> result = findAllSpePageFetch(spec, page, filter.getFetch());
+
+        List<Long> productIds = result.getContent().stream().map(Product::getId).toList();
+        List<File> allFiles = productIds.isEmpty()
+                ? Collections.emptyList()
+                : fileRepository.findByRefIdIn(productIds);
+
+        Map<Long, List<String>> imagesByRefId = allFiles.stream()
+                .collect(Collectors.groupingBy(
+                        File::getRefId,
+                        Collectors.mapping(File::getSecureURL, Collectors.toList())
+                ));
+
+        return result.map(pro -> new ProductDTO(pro, imagesByRefId.getOrDefault(pro.getId(), Collections.emptyList())));
     }
 
     @Override
     @Transactional
-    public String create(ProductReq req) {
+    public String create(ProductReq req, List<MultipartFile> files) {
         if (checkCode(req.getCode())) {
             throw new ApiException("code already existed!");
         }
@@ -79,6 +96,12 @@ class ProductServiceImpl extends BaseInternalActivateServiceImpl<Product, Long> 
         pro.setCode(req.getCode());
         pro.setCategory(cate);
         saveData(pro);
+
+        try {
+            uploadService.saveMultiFile(files, cate.getEnglishName().toLowerCase(), pro.getId(), cate.getEnglishName().toUpperCase());
+        } catch (IOException ex) {
+            throw new ApiException(ex.getMessage());
+        }
 
         // save product Item
         productPriceService.saveAllPrice(req.getPrices(), pro);

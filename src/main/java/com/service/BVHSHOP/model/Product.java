@@ -3,6 +3,7 @@ package com.service.BVHSHOP.model;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Product extends ActivateEntityModel {
 
     @Column(nullable = false, length = 20)
@@ -30,11 +32,12 @@ public class Product extends ActivateEntityModel {
 
     @JoinColumn(referencedColumnName = ProductType_.ID)
     @ManyToOne
+    @JsonIncludeProperties({DataRef_.ID, DataRef_.CODE, DataRef_.NAME, DataRef_.ENGLISH_NAME, DataRef_.DESCRIPTION})
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "currency_code", referencedColumnName = "code")
-    @JsonIncludeProperties({DataRef_.CODE, DataRef_.NAME, DataRef_.ENGLISH_NAME, DataRef_.DESCRIPTION})
+    @JsonIncludeProperties({DataRef_.ID, DataRef_.CODE, DataRef_.NAME, DataRef_.ENGLISH_NAME, DataRef_.DESCRIPTION})
     private DataRef currency;
 
     private String description;

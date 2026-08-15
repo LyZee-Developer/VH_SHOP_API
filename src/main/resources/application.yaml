@@ -1,11 +1,13 @@
 spring:
+  server:
+    port: 8080
   application:
     name: BVHSHOP
   mvc:
     throw-exception-if-no-handler-found: true
   web:
     resources:
-      add-mappings: false
+      add-mappings: true
   datasource:
     url: jdbc:postgresql://localhost:5432/VH_SHOP
     username: postgres
@@ -17,6 +19,12 @@ spring:
 #      --- config with flyway
 #      ddl-auto: validate
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -24,3 +32,11 @@ spring:
 jwt:
   secret: xzv7jNAmMkRSTHTJMc9LutkWCDRYZEgEEBNoDpDEE0E=
   expiration: 3600000
+app:
+  upload:
+    dir: src/main/resources/static/images/
+
+cloudinary:
+  cloud-name: p1s4s7ed
+  api-key: 347455333581727
+  api-secret: 4yj7KSAhMlvlWFowsv-xTkC7lSU

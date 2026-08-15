@@ -69,14 +69,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // REST API + JWT does not use CSRF
-                .csrf(csrf -> csrf.disable())
+
 
                 // JWT is stateless
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Authentication error handler
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint())).authorizeHttpRequests(auth -> auth
-
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint())).
+                authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/images/**").permitAll()   // <-- allow public access to images
                         /*
                          * CORS preflight request
                          */.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -96,7 +96,10 @@ public class SecurityConfig {
                          * GET  /api/category/list
                          * PUT  /api/category/update
                          * DELETE /api/category/delete
-                         */.anyRequest().authenticated())
+                         */.anyRequest().authenticated()
+                )
+                // REST API + JWT does not use CSRF
+                .csrf(csrf -> csrf.disable())
 
                 /*
                  * Execute JWT filter before Spring's
@@ -105,6 +108,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
     /**
      * Return 401 when authentication is required
      * but the user is not authenticated.

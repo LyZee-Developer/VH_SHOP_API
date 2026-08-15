@@ -13,4 +13,5 @@ public interface RouteController {
     String PRODUCT = API + "/product";
     String DATA_REF = API + "/data-ref";
     String STOCK = API + "/stock";
+    String UPLOAD = API + "/upload";
 }

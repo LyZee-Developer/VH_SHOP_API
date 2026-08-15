@@ -8,6 +8,10 @@ import com.service.BVHSHOP.service.Product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 /**
  * @Author : Ly LeangSeng
@@ -27,8 +31,10 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody ProductReq req) {
-        return ResponseEntity.ok(ApiResponse.success(productService.create(req)));
+    public ResponseEntity<?> create( @RequestPart("data") String data, @RequestPart("files") List<MultipartFile> files) {
+        ObjectMapper mapper = new ObjectMapper();
+        ProductReq req = mapper.readValue(data, ProductReq.class);
+        return ResponseEntity.ok(ApiResponse.success(productService.create(req,files)));
     }
 
     @PostMapping("/update/{id}")
